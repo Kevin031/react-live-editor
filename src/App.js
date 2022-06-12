@@ -59,7 +59,7 @@ const AppWrapper = styled.div`
       position: relative;
     }
     &__monaco-view {
-      height: calc(100vh - 40px - 50px);
+      height: calc(100vh - 40px - 50px - 50px);
     }
     &__module-list {
       height: 40px;
