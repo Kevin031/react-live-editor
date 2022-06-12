@@ -1,22 +1,18 @@
 /* eslint-disable */
-import React from "react";
-import ReactDOM from "react-dom";
-import ObjPath from "object-path";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ObjPath from 'object-path';
 
-import * as Acorn from "acorn";
+import * as Acorn from 'acorn';
 
-import { generate as generateJs } from "escodegen";
-import { transform as babelTransform } from "@babel/standalone";
+import { generate as generateJs } from 'escodegen';
+import { transform as babelTransform } from '@babel/standalone';
 
 function isReactNode(node) {
   const type = node.type; //"ExpressionStatement"
-  const obj = ObjPath.get(node, "expression.callee.object.name");
-  const func = ObjPath.get(node, "expression.callee.property.name");
-  return (
-    type === "ExpressionStatement" &&
-    obj === "React" &&
-    func === "createElement"
-  );
+  const obj = ObjPath.get(node, 'expression.callee.object.name');
+  const func = ObjPath.get(node, 'expression.callee.property.name');
+  return type === 'ExpressionStatement' && obj === 'React' && func === 'createElement';
 }
 
 export function findReactNode(ast) {
@@ -36,11 +32,11 @@ export function createRenderer(domElement, moduleResolver = () => null) {
   function getWrapperFunction(code) {
     try {
       // 1. transform code
-      const tcode = babelTransform(code, { presets: ["es2015", "react"] }).code;
+      const tcode = babelTransform(code, { presets: ['es2015', 'react'] }).code;
 
       // 2. get AST
       const ast = Acorn.parse(tcode, {
-        sourceType: "module"
+        sourceType: 'module',
       });
 
       // 3. find React.createElement expression in the body of program
@@ -58,12 +54,11 @@ export function createRenderer(domElement, moduleResolver = () => null) {
       }
 
       // 6. create a new wrapper function with all dependency as parameters
-      console.log('compiler', generateJs(ast))
-      return new Function("React", "render", "require", generateJs(ast));
+      return new Function('React', 'render', 'require', generateJs(ast));
     } catch (ex) {
-        console.error(ex)
+      console.error(ex);
       // in case of exception render the exception message
-      render(<pre style={{ color: "red" }}>{ex.message}</pre>);
+      render(<pre style={{ color: 'red' }}>{ex.message}</pre>);
     }
   }
 
@@ -81,6 +76,6 @@ export function createRenderer(domElement, moduleResolver = () => null) {
     // just compiles and returns the stringified wrapper function
     getCompiledCode(code) {
       return getWrapperFunction(code).toString();
-    }
+    },
   };
 }
