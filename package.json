@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.2.1",
     "acorn": "^8.7.1",
     "antd": "^3.19.2",
+    "axios": "^0.27.2",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
     "babel-plugin-named-asset-import": "^0.3.8",

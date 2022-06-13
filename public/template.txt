@@ -1,0 +1,104 @@
+// 随意修改
+import { Carousel, Statistic, Row, Col, Input } from 'antd';
+const { Countdown } = Statistic;
+const { Search } = Input;
+
+const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
+
+const contentStyle = {
+  height: '160px',
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
+
+function App () {
+  const [count, setCount] = React.useState(0)
+
+  const onChange = (currentSlide) => {
+    console.log(currentSlide);
+  };
+
+  const renderLocalDemo = () => {
+    return <div>
+      <h2>测一下状态</h2>
+      <span>{count}</span>
+      <button onClick={() => setCount(count + 1)}>点我+1</button>
+    </div>
+  }
+
+  const renderCarousel = () => {
+    return <div>
+      <h2>测一下轮播图</h2>
+      <Carousel afterChange={onChange}>
+        <div>
+          <h3 style={contentStyle}>1</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>2</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>3</h3>
+        </div>
+        <div>
+          <h3 style={contentStyle}>4</h3>
+        </div>
+      </Carousel>
+    </div>
+  }
+
+  const renderCountdown = () => {
+    return <div>
+      <h2>测一下倒计时</h2>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Countdown title="Countdown" value={deadline} />
+        </Col>
+        <Col span={12}>
+          <Countdown title="Million Seconds" value={deadline} format="HH:mm:ss:SSS" />
+        </Col>
+        <Col span={24} style={{ marginTop: 32 }}>
+          <Countdown title="Day Level" value={deadline} format="D 天 H 时 m 分 s 秒" />
+        </Col>
+      </Row>
+    </div>
+  }
+
+  const renderSearch = () => {
+    return <div>
+      <h2>测一下输入框</h2>
+      <Search
+        placeholder="input search text"
+        onSearch={value => console.log(value)}
+        style={{ width: 200 }}
+      />
+      <br />
+      <br />
+      <Search placeholder="input search text" onSearch={value => console.log(value)} enterButton />
+      <br />
+      <br />
+      <Search
+        placeholder="input search text"
+        enterButton="Search"
+        size="large"
+        onSearch={value => console.log(value)}
+      />
+    </div>
+  }
+
+  return (
+    <div>
+      <h2>hello world!</h2>
+      {renderLocalDemo()}
+      <br />
+      {renderCarousel()}
+      <br />
+      {renderCountdown()}
+      <br />
+      {renderSearch()}
+    </div>
+  );
+};
+
+<App />

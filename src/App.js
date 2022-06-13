@@ -8,6 +8,7 @@ import { Button, Popover } from 'antd';
 import { moduleListMap, moduleList } from './moduleList';
 import './App.css';
 import 'antd/dist/antd.css';
+import axios from 'axios';
 
 const _logError = (...args) => console.error(...args);
 Object.defineProperty(console, 'error', {
@@ -57,6 +58,7 @@ const AppWrapper = styled.div`
     &__editor {
       width: 50%;
       position: relative;
+      border-right: solid 1px #ddd;
     }
     &__monaco-view {
       height: calc(100vh - 40px - 50px - 50px);
@@ -93,56 +95,29 @@ const ModulePopover = styled.div`
 function App() {
   const renderEleRef = React.useRef(null);
   const editorRef = React.useRef(null);
-  const readyRef = React.useRef(false);
-  const code = `import { Carousel } from 'antd';
-  
-  const contentStyle = {
-    height: '160px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-  };
-  
-  function App () {
-    console.log('render')
-    const onChange = (currentSlide) => {
-      console.log(currentSlide);
-    };
-  
-    return (
-      <Carousel afterChange={onChange}>
-        <div>
-          <h3 style={contentStyle}>1</h3>
-        </div>
-        <div>
-          <h3 style={contentStyle}>2</h3>
-        </div>
-        <div>
-          <h3 style={contentStyle}>3</h3>
-        </div>
-        <div>
-          <h3 style={contentStyle}>4</h3>
-        </div>
-      </Carousel>
-    );
-  };
-  
-  <App />`;
+  const [defaultCode, setDefaultCode] = React.useState('')
+
+  const getInitCode = () => {
+    axios.get('/template.txt').then(res => {
+      setDefaultCode(res.data)
+      editorRef.current.setValue(res.data)
+      runCode()
+    })
+  }
+
+  const code = '';
   const runCode = () => {
     const renderer = createRenderer(renderEleRef.current, moduleName => {
       if (moduleListMap[moduleName]) return moduleListMap[moduleName].module;
       return null;
     });
     const codeValue = editorRef.current.getValue();
-    // console.log('code value', codeValue);
     renderer.run(codeValue);
   };
   const handleEditorDidMount = editor => {
     editorRef.current = editor;
-    if (!readyRef.current) {
-      runCode();
-      editorRef.current = true;
+    if (!defaultCode) {
+      getInitCode();
     }
   };
   return (
@@ -155,7 +130,7 @@ function App() {
           <div className="app-view__editor">
             <div className="app-view__module-list">
               <Popover
-                placement="bottomRight"
+                placement="rightTop"
                 content={
                   <ModulePopover>
                     {moduleList.map(item => (
@@ -172,7 +147,7 @@ function App() {
             </div>
             <Editor
               className="app-view__monaco-view"
-              defaultValue={code}
+              value={code}
               defaultLanguage="javascript"
               onMount={handleEditorDidMount}
             />
